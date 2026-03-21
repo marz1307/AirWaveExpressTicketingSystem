@@ -1,11 +1,10 @@
--- Create the database
 CREATE DATABASE AirWaveExpressTicketingSystem;
 GO
 
 USE AirWaveExpressTicketingSystem;
 GO
 
--- Create the Employee table
+-- Employee
 CREATE TABLE Employee (
     EmployeeID VARCHAR(10) PRIMARY KEY,  
     Name NVARCHAR(100) NOT NULL,         
@@ -17,12 +16,12 @@ CREATE TABLE Employee (
 );
 GO
 
--- Create a new sequence for generating unique EmployeeID
+-- Auto-generate EmployeeID via sequence
 CREATE SEQUENCE EmployeeSeq
     START WITH 200  -- Start from 200 to avoid conflict with existing EmployeeID
     INCREMENT BY 1;
 GO
--- Create a new trigger to generate the EmployeeID using the sequence
+-- Trigger: generate EmployeeID on insert
 CREATE TRIGGER trgGenerateEmployeeID
 ON Employee
 INSTEAD OF INSERT
@@ -39,7 +38,7 @@ BEGIN
     FROM INSERTED;
 END;
 GO
--- Create Passenger Table
+-- Passenger
 CREATE TABLE Passenger (
     PassengerID INT PRIMARY KEY IDENTITY(2000,1),
     FirstName NVARCHAR(50) NOT NULL,
@@ -51,7 +50,7 @@ CREATE TABLE Passenger (
 );
 GO
 
--- Create Flight Table
+-- Flight
 CREATE TABLE Flight (
     FlightID INT PRIMARY KEY IDENTITY(3000,1),
    FlightNumber VARCHAR(10),
@@ -63,13 +62,13 @@ CREATE TABLE Flight (
 );
 GO
 
--- Create sequence to generate numeric part of FlightNumber
+-- Auto-generate FlightNumber via sequence
 CREATE SEQUENCE FlightSeq
     START WITH 100  -- Starting value for FlightNumber
     INCREMENT BY 1; -- Increment by 1
 GO
 
--- Create trigger to automatically generate FlightNumber based on FlightSeq
+-- Trigger: generate FlightNumber on insert
 CREATE TRIGGER trgGenerateFlightNumber
 ON Flight
 INSTEAD OF INSERT
@@ -87,7 +86,7 @@ BEGIN
 END;
 GO
 
--- Create Reservation Table
+-- Reservation
 CREATE TABLE Reservation (
     PNR CHAR(10) PRIMARY KEY,
     PassengerID INT NOT NULL,
@@ -97,7 +96,7 @@ CREATE TABLE Reservation (
 );
 GO
 
--- Create Ticket Table
+-- Ticket
 CREATE TABLE Ticket (
     TicketID INT PRIMARY KEY IDENTITY(4000,1),
     PNR CHAR(10) NOT NULL,
@@ -115,7 +114,7 @@ CREATE TABLE Ticket (
 );
 GO
 
--- AdditionalServices Table
+-- AdditionalServices
 CREATE TABLE AdditionalServices (
     ServiceID INT PRIMARY KEY IDENTITY(5000,1),
     TicketID INT NOT NULL,
@@ -127,7 +126,7 @@ CREATE TABLE AdditionalServices (
 );
 GO
 
--- Create Baggage Table
+-- Baggage
 CREATE TABLE Baggage (
     BaggageID VARCHAR(15) PRIMARY KEY,  -- Alphanumeric BaggageID (BG + PassengerID)
     PassengerID INT NOT NULL,           -- Foreign Key referencing PassengerID
@@ -140,7 +139,7 @@ CREATE TABLE Baggage (
 );
 GO
 
--- Create trigger to generate BaggageID
+-- Trigger: generate BaggageID on insert
 CREATE TRIGGER trgGenerateBaggageID
 ON Baggage
 INSTEAD OF INSERT
@@ -160,7 +159,7 @@ GO
 
 INSERT INTO Passenger (FirstName, LastName, Email, DateOfBirth, MealPreference, EmergencyContact) VALUES ('Haruto', 'Tanaka', 'haruto.tanaka@gmail.com', '1985-05-15', 'Vegetarian', 'Yuki Tanaka');
 INSERT INTO Passenger (FirstName, LastName, Email, DateOfBirth, MealPreference, EmergencyContact) VALUES ('Yui', 'Sato', 'yui.sato@yahoo.com', '1990-08-22', 'Non-Vegetarian', 'Ken Sato');
-INSERT INTO Passenger (FirstName, LastName, Email, DateOfBirth, MealPreference, EmergencyContact) VALUES ('Jo�o', 'Silva', 'joao.silva@aol.com', '1982-03-10', 'Vegetarian', 'Maria Silva');
+INSERT INTO Passenger (FirstName, LastName, Email, DateOfBirth, MealPreference, EmergencyContact) VALUES ('JoÃ£o', 'Silva', 'joao.silva@aol.com', '1982-03-10', 'Vegetarian', 'Maria Silva');
 INSERT INTO Passenger (FirstName, LastName, Email, DateOfBirth, MealPreference, EmergencyContact) VALUES ('Ana', 'Costa', 'ana.costa@gmx.com', '1995-11-30', 'Non-Vegetarian', 'Pedro Costa');
 INSERT INTO Passenger (FirstName, LastName, Email, DateOfBirth, MealPreference, EmergencyContact) VALUES ('Gabriel', 'Oliveira', 'gabriel.oliveira@hotmail.com', '1988-07-19', 'Vegetarian', 'Lucas Oliveira');
 INSERT INTO Passenger (FirstName, LastName, Email, DateOfBirth, MealPreference, EmergencyContact) VALUES ('Isabela', 'Santos', 'isabela.santos@proton.me', '1992-04-25', 'Non-Vegetarian', 'Rafael Santos');
@@ -208,7 +207,7 @@ GO
 
 SELECT * FROM Passenger
 
--- Insert sample employee records with specific EmployeeID values
+-- Sample employee data
 INSERT INTO Employee (EmployeeID, Username, Password, Name, Email, Role, LastLogin)
 VALUES ('EM201', 'chinedu.okeke', 'securePass123', 'Chinedu Okeke', 'chinedu.okeke@airwave.com', 'Ticketing Staff', '2025-04-23 08:30:00');
 GO
@@ -233,7 +232,7 @@ INSERT INTO Employee (EmployeeID, Username, Password, Name, Email, Role, LastLog
 VALUES ('EM206', 'ifeanyiUgwu', 'safePass789', 'Ifeanyi Ugwu', 'ifeanyi.ugwu@airwave.com', 'Ticketing Staff', '2025-04-23 10:00:00');
 GO
 
--- Insert sample flight records
+-- Sample flight data
 INSERT INTO Flight (FlightNumber, DepartureTime, ArrivalTime, Origin, Destination)
 VALUES ('AW001', '2025-05-01 08:00:00', '2025-05-01 12:00:00', 'Tokyo Narita', 'Los Angeles');
 GO
@@ -749,7 +748,7 @@ RETURN (
 )
 GO
 
--- Question 2
+-- CHECK CONSTRAINT: Booking date validation
 
 ALTER TABLE Reservation
 WITH NOCHECK
@@ -770,7 +769,7 @@ VALUES ('TEST0006', 2000, DATEADD(DAY, -1, GETDATE()), 'Confirmed');
 
 --The INSERT statement conflicted with the CHECK constraint "CHK_BookingDateNotPast".
 
---QUESTION 3 - create a query to identify passengers who meet both criteria: having pending reservations and being over 40 years old
+-- Passengers with pending reservations aged over 40
 
 WITH PassengerAge AS (
     SELECT 
@@ -810,8 +809,8 @@ ORDER BY
 
 
 
-----QUESTION 4 - USING STORED PROCEDURES AND FUNCTIONS
----QUESTION 4A - SEARCH BY PASSENGER LAST NAME
+-- Stored procedures & functions
+-- Search passengers by last name
 
 
 CREATE PROCEDURE sp_SearchPassengersByLastName
@@ -846,7 +845,7 @@ BEGIN
 END
 GO
 
---SAMPLE EXAMPLE FOR ABOVE PROCEDURE
+-- Business class passengers with meals (today)
 EXEC sp_SearchPassengersByLastName @LastName = 'Sato';
 
 
@@ -881,10 +880,9 @@ BEGIN
 END
 GO
 
---USUAGE EXAMPLE
 EXEC sp_GetBusinessClassPassengersWithMealsToday;
 
---QUESTION 4C - Insert New Employee
+-- Insert new employee
 
 CREATE PROCEDURE sp_InsertNewEmployee
     @Username NVARCHAR(50),
@@ -939,7 +937,7 @@ EXEC sp_InsertNewEmployee
 
 	select * from Employee
 
-    --- 4D
+    -- Update passenger details
 
 	CREATE PROCEDURE sp_UpdatePassengerDetails
     @PassengerID INT,
@@ -1024,7 +1022,6 @@ BEGIN
 END
 GO
 
---USAGE EXAMPLE
 EXEC sp_UpdatePassengerDetails 
     @PassengerID = 2005,
     @LastName = 'Santos',
@@ -1034,7 +1031,7 @@ EXEC sp_UpdatePassengerDetails
 
 
 
-	--QUESTION 5 - View for Employee-Issued E-Boarding Numbers with Revenue Details
+	-- View: Employee boarding numbers with revenue
 	CREATE VIEW vw_EmployeeTicketRevenue AS
 SELECT 
     e.EmployeeID,
@@ -1072,12 +1069,10 @@ JOIN
 LEFT JOIN 
     AdditionalServices a ON t.TicketID = a.TicketID;
 
---Usage Examples - View all tickets issued by a specific employee (EmployeeID 1000):
 SELECT * FROM vw_EmployeeTicketRevenue
 WHERE EmployeeID = 'EM201'
 ORDER BY IssueDate DESC, IssueTime DESC;
 
---Usage Example - Calculate total revenue generated by an employee on a specific flight:
 SELECT 
     EmployeeID,
     EmployeeName,
@@ -1094,7 +1089,7 @@ GROUP BY
 
 
 
---QUESTION 6 - TRIGGER FOR AUTO SEAT RESERVATION
+-- Trigger: Auto seat reservation on ticket issue
 --modify our database schema to include a Seat table to track seat availability, then create the trigger
 -- Add Seat table to track seat status
 
@@ -1240,7 +1235,7 @@ WHERE TicketID = 4090;
 
 SELECT * FROM Ticket
 
---QUESTION 7 - TOTAL BAGGAGE
+-- Function: Baggage totals by flight
 --create a table-valued function that returns the total number of checked-in baggage items 
 --for a specified flight on a specific date, along with relevant details
 
@@ -1276,7 +1271,6 @@ RETURN (
 );
 
 
---USAGE EXAMPLE - Using the function for a specific flight and date
 -- Get checked-in baggage for flight AW101 on 2025-04-25
 SELECT * FROM fn_GetCheckedInBaggageCount('AW101', '2025-04-25');
 
@@ -1284,7 +1278,7 @@ SELECT * FROM fn_GetCheckedInBaggageCount('AW101', '2025-04-25');
 SELECT * FROM fn_GetCheckedInBaggageCount('AW101', CAST(GETDATE() AS DATE));
 
 
---REPORT THAT IS more detailed  including passenger information
+-- Detailed checked-in baggage report per flight
 CREATE OR ALTER FUNCTION fn_GetDetailedCheckedInBaggage(
     @FlightNumber NVARCHAR(10) = NULL,
     @Date DATE = NULL
@@ -1317,7 +1311,6 @@ RETURN (
         AND (@Date IS NULL OR CAST(t.IssueDate AS DATE) = @Date));
 
 
---USAGE EXAMPLE USING MORE DETAILED REPORT
 -- Get all checked-in baggage details for flight AW101 on 25/04/2025
 SELECT * FROM fn_GetDetailedCheckedInBaggage('AW101', '2025-04-25');
 
@@ -1326,7 +1319,9 @@ SELECT * FROM fn_GetDetailedCheckedInBaggage('AW101', NULL);
 
 
 
----8
+-- ============================================================
+-- INDEXES
+-- ============================================================
 
 CREATE INDEX IX_Passenger_Email ON Passenger(Email);
 --Improves lookups by email, e.g., for login or duplicate checks
