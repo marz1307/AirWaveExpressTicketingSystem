@@ -1,38 +1,45 @@
-# AirWave Express Ticketing System – Database Design
+# AirWave Express Ticketing System
 
-This repository contains the SQL script for designing the database schema of **AirWave Express**, a fictional airport ticketing system.
+A relational database for an airport ticketing platform built in SQL Server, covering passenger management, flight scheduling, reservations, ticketing, and ancillary services.
 
-## 📄 File
+## Overview
 
-- `Task 1.sql`: SQL script to create the database and its core tables, sequences, and triggers.
+This repository contains the full SQL schema including tables, sequences, and automated triggers. The design enforces data integrity through constraints and well-defined business rules.
 
-## 🧱 Key Components
+## Database Schema
 
-### Tables
-- `Employee`
-- `Passenger`
-- `Flight`
-- `Reservation`
-- `Ticket`
-- `AdditionalServices`
-- `Baggage`
+| Table                | Description                                        |
+|----------------------|----------------------------------------------------|
+| `Employee`           | Staff records and roles                            |
+| `Passenger`          | Passenger profiles                                 |
+| `Flight`             | Flight schedules and routes                        |
+| `Reservation`        | Bookings linking passengers to flights             |
+| `Ticket`             | Issued tickets tied to reservations                |
+| `AdditionalServices` | Optional add-ons (meals, seat upgrades, etc.)      |
+| `Baggage`            | Baggage allowance and tracking                     |
 
-### Features
-- Use of **constraints** to ensure data integrity
-- **Sequences** for generating unique IDs (e.g., `EmployeeSeq`)
-- **Triggers** to automate ID assignment (e.g., `trgGenerateEmployeeID`)
-- Use of `CHECK`, `NOT NULL`, and `UNIQUE` constraints
+## Key Design Features
 
-## 💻 How to Use
+- Sequences for auto-generating unique IDs (e.g. `EmployeeSeq`)
+- Triggers for automated ID assignment (e.g. `trgGenerateEmployeeID`)
+- `CHECK`, `NOT NULL`, and `UNIQUE` constraints throughout
 
-1. Open **SQL Server Management Studio** or any compatible tool.
-2. Run the script `Task 1.sql` to create and initialize the database.
+## Getting Started
 
-## 📌 Notes
+### Prerequisites
+- SQL Server Management Studio (SSMS) or compatible tool
+- A running SQL Server instance
 
-- Ensure no existing database with the same name exists before execution.
-- Designed for academic and instructional purposes.
+### Setup
+1. Clone the repository
+2. Open `schema.sql` in SSMS
+3. Ensure no existing database with the same name before execution
+4. Run the script to create and initialise the database
 
----
+## License
 
-> Developed by Marvis Osazee Osazuwa as part of a university project.
+Available under the [MIT License](LICENSE).
+
+## Author
+
+**Marvis Osazuwa** — [GitHub](https://github.com/marz1307) · [LinkedIn](https://linkedin.com/in/marvisosazuwa)
